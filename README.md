@@ -1,6 +1,6 @@
 Certainly, you can adjust the code blocks to make the README more user-friendly. Here's the updated README with your requested format:
 
-```markdown
+
 # Django Multi-Vendor E-commerce
 
 ![Project Logo](link-to-your-logo.png) <!-- Replace with your project logo or screenshot -->
