@@ -1,0 +1,263 @@
+{% extends '../base.html' %}
+{% load static %}
+{% block content %}
+
+{% include '../layouts/nav.html' %}
+<section class="section-content padding-y bg">
+	<div class="container">
+		
+		<!-- ============================ COMPONENT 1 ================================= -->
+		
+		<div class="row">
+	<aside class="col-lg-9">
+		<div class="card">
+			<table class="table table-borderless table-shopping-cart">
+				<thead class="text-muted">
+					<tr class="small text-uppercase">
+						<th scope="col">Product</th>
+						<th scope="col" width="120">Quantity</th>
+						<th scope="col" width="120">Price</th>
+  <th scope="col" class="text-right" width="200"> </th>
+</tr>
+</thead>
+<tbody>
+
+{% for item in cart_summary %}
+<tr class='product-item' data-index="{{ item.product.id }}">
+	<td>
+		<figure class="itemside align-items-center">
+			<div class="aside"><img src="{{ item.product.image.url }}" class="img-sm"></div>
+			<figcaption class="info">
+				<a href="#" class="title text-dark">{{item.product.title}}</a>
+				<p class=""></p>
+			</figcaption>
+		</figure>
+	</td>
+	<td> 
+		<!-- col.// -->
+					<div class="col"> 
+						<div class="input-group input-spinner">
+							<div class="input-group-prepend">
+							<button class="btn btn-light " type="button" id="button-minus" data-index="{{item.product.id}}" > <i class="fa fa-minus"></i> </button>
+							</div>
+							<input type="text" class="form-control" id="current_value"  data-index="{{ item.qty }}" value="{{ item.qty }}">
+							<div class="input-group-append">
+							<button class="btn btn-light" type="button" id="button-plus" data-index="{{item.product.id}}" > <i class="fa fa-plus"></i> </button>
+							</div>
+						</div> <!-- input-group.// -->
+					</div> <!-- col.// -->
+				</td>
+				<td> 
+		<div class="price-wrap"> 
+			<var class="price" id="price" data-index="{{ item.product.id }}">${{item.total_price}}</var> 
+			<small class="text-muted" id="each_price"> ${{item.price}} </small> 
+		</div> <!-- price-wrap .// -->
+	</td>
+	<td class="text-right"> 
+	<a href="#" class="btn btn-danger" id="remove" data-index="{{item.product.id}}" > Remove</a>
+	</td>
+</tr>
+
+{% endfor %}
+	
+</tbody>
+</table>
+</div> <!-- card.// -->
+
+	</aside> <!-- col.// -->
+	<aside class="col-lg-3">
+		
+		<div class="card">
+			<div class="card-body">
+				
+			<dl class="dlist-align">
+				<dt>Tax:</dt>
+				<dd class="text-right"> $10.00</dd>
+			</dl>
+			<dl class="dlist-align">
+				<dt>shipping:</dt>
+				<dd class="text-right"> $10.00</dd>
+			</dl>
+			<dl class="dlist-align">
+			  <dt>Total:</dt>
+			  <dd id ='total_price' class="text-right text-dark b">$<strong>{{total}}</strong></dd>
+			</dl>
+			<hr>
+			<p class="text-center mb-3">
+				<img src="{% static './images/misc/payments.png' %}" height="26">
+			</p>
+			<form id ='CheckoutForm' action="{% url 'orders:add_order' %}" method="post" style="display:none">
+				{% csrf_token %}
+			</form>
+			<a  class="btn btn-primary btn-block" id="Checkout"> Checkout </a>
+			<a href="{% url 'products:store' %}" class="btn btn-light btn-block">Continue Shopping</a>
+		</div> <!-- card-body.// -->
+		</div> <!-- card.// -->
+
+</aside> <!-- col.// -->
+
+
+</div> <!-- row.// -->
+<!-- ============================ COMPONENT 1 END .// ================================= -->
+
+</div> <!-- container .//  -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+
+
+{% include '../layouts/footer.html' %}
+
+{% block scripts %}
+
+
+<script>
+	// Delete Item
+
+
+	$(document).on("click", "#remove", function (e) {
+		e.preventDefault();
+		var prodid = $(this).attr('data-index');
+	
+		$.ajax({
+			type: "POST",
+			url: '{% url "cart:cart_delete" %}',
+			data: {
+				productid: prodid,
+				
+				csrfmiddlewaretoken: "{{csrf_token}}",
+				
+				action: "post",
+			},
+			success: function (json) {
+				$('.product-item[data-index="' + prodid + '"]').remove();
+				var total=0
+				if(json.qty == 0){
+					total = 0
+		
+				  }
+				  else{
+					total = json.total
+			
+				  }
+		
+			
+				$('#basket-qty').text(json.qty);
+				document.getElementById("total_price").innerHTML = total;
+		
+		
+			},
+			error: function (xhr, errmsg, err) {},
+		});
+	});
+  
+	// Update Item
+	$(document).on("click", "#button-plus", function (e) {
+		e.preventDefault();
+		var product_quatity = $(this).closest('.input-spinner').find('#current_value');
+		var value = parseInt(product_quatity.val()) +1;
+		var prodid = $(this).attr('data-index');
+		
+		$.ajax({
+			type: "POST",
+			url: '{% url "cart:cart_update" %}',
+			data: {
+				productid: prodid,
+				productqty:value,
+			  csrfmiddlewaretoken: "{{csrf_token}}",
+			  action: "post",
+			},
+			success: function (json) {
+				
+				product_quatity.val(value);
+				var price = $("#each_price").text().replace("$", "");
+	
+		
+		
+				var price_updeate = $('#price[data-index="' + prodid + '"]');
+			
+				price_updeate.text("$"+price*value);
+			
+				
+				var total=0;
+				if(json.qty == 0){
+					total = 0
+					
+				}
+				else{
+					total = json.total
+					
+				}
+				
+				$('#basket-qty').text(json.qty);
+				document.getElementById("total_price").innerHTML = total;
+				
+			},
+			error: function (xhr, errmsg, err) {},
+		});
+		
+});
+$(document).on("click", "#button-minus", function (e) {
+
+	e.preventDefault();
+	var product_quatity = $(this).closest('.input-spinner').find('#current_value');
+	var value = parseInt(product_quatity.val()); 
+	var prodid  = $(this).attr('data-index');
+	if (value < 1){
+		value = 1;
+	}else{
+		value = value-1;
+
+	}
+	
+
+	$.ajax({
+		type: "POST",
+		url: '{% url "cart:cart_update" %}',
+		data: {
+			productid: prodid ,
+			productqty: value,
+		
+			csrfmiddlewaretoken: "{{csrf_token}}",
+			  
+			  action: "post",
+			},
+		success: function (json) {
+			
+			product_quatity.val(value);
+			var price = $("#each_price").text().replace("$", "");
+	
+		
+		
+			var price_updeate = $('#price[data-index="' + prodid + '"]');
+			
+			price_updeate.text("$"+price*value);
+
+			var total=0;
+				if(json.qty == 0){
+					total = 0
+		
+				  }
+				  else{
+					total = json.total
+			
+				  }
+		
+				  
+				$('#basket-qty').text(json.qty);
+				$('total_price').text(total);
+				document.getElementById("total_price").innerHTML = total;
+		},
+
+		error: function (xhr, errmsg, err) {},
+		});
+	
+	});
+	$("#Checkout").on('click',function (e) {
+		$('#CheckoutForm').submit();
+	});
+	
+</script>
+  
+{% endblock scripts %}
+
+{% endblock content %}

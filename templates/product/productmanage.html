@@ -1,0 +1,22 @@
+
+
+{% extends '../base.html' %}
+{% load static %}
+{% block content %}
+	
+{% include 'layouts/nav.html' %}
+<form method="post" action="{% url 'products:make_sale' %}">
+    {% csrf_token %}
+    {% for product in products %}
+        <input type="checkbox" name="selected_products" value="{{ product.id }}">
+        {{ product.title }}
+        <!-- Display other product attributes as needed -->
+        <br>
+    {% endfor %}
+    <button type="submit">Edit Selected Products</button>
+</form>
+
+
+    
+{% endblock content %}
+    

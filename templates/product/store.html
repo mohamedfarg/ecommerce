@@ -1,0 +1,238 @@
+{% extends '../base.html' %}
+{% load static %}
+{% block content %}
+	
+{% include 'layouts/nav.html' %}
+
+<!-- ========================= SECTION PAGETOP ========================= -->
+<section class="section-pagetop bg">
+<div class="container">
+	<h2 class="title-page">Search Result</h2>
+</div> <!-- container //  -->
+</section>
+<!-- ========================= SECTION INTRO END// ========================= -->
+
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-content padding-y">
+<div class="container">
+
+<div class="row">
+	<aside class="col-md-3">
+	<form action="{% url 'products:product_search' %}" method="get">
+
+{% csrf_token %}
+			
+<div class="card">
+	<article class="filter-group">
+		<header class="card-header">
+			<a href="#" data-toggle="collapse" data-target="#collapse_1" aria-expanded="true" class="">
+				<i class="icon-control fa fa-chevron-down"></i>
+				<h6 class="title">Categories</h6>
+			</a>
+		</header>
+		<div class="filter-content collapse show" id="collapse_1" >
+			<div class="card-body">
+				
+				<ul class="list-menu">
+					
+
+					{% comment %}
+					  
+					<!-- <li><a href="#">{{ category.name }}</a></li> -->
+					{% endcomment %}
+					{% for category in categories %}
+					<li><a href="#" onclick="setSelectedCategory('{{ category.name }}')">{{ category.name }}</a></li>
+					{% endfor %}
+					<input type="hidden" name="category" id="selectedCategory" value="">
+				</ul>
+
+			</div> <!-- card-body.// -->
+		</div>
+	</article> <!-- filter-group  .// -->
+	
+	<!-- filter-group .// -->
+	
+	<article class="filter-group">
+		<header class="card-header">
+			<a href="#" data-toggle="collapse" data-target="#collapse_3" aria-expanded="true" class="">
+				<i class="icon-control fa fa-chevron-down"></i>
+				<h6 class="title">Price range </h6>
+			</a>
+		</header>
+		<div class="filter-content collapse show" id="collapse_3" style="">
+			<div class="card-body">
+				
+				<div class="form-row">
+				<div class="form-group col-md-6">
+				  <label>Min</label>
+				  <input type="number" name='minPrice' class="mr-2 form-control" placeholder="$0" id="minPrice" value="0">
+				</div>
+				<div class="form-group text-right col-md-6">
+				  <label>Max</label>
+				  <input type="number" name='maxPrice' class="mr-2 form-control" placeholder="$10000" id="maxPrice" value="10">
+				</div>
+				</div> <!-- form-row.// -->
+				<button class="btn btn-block btn-primary" id='apply' onclick="submitForm()">Apply</button>
+			</div><!-- card-body.// -->
+		</div>
+
+	</article> <!-- filter-group .// -->
+	
+</div> <!-- card.// -->
+
+
+</form>
+	</aside> <!-- col.// -->
+
+
+	<main class="col-md-9">
+
+<header class="border-bottom mb-4 pb-3">
+		<div class="form-inline">
+			<span class="mr-md-auto">{{ count }} Items found </span>
+			<span> <a href="{% url 'products:store' %}" class=" text-muted ">clear</a> </span>
+			
+		</div>
+</header><!-- sect-heading -->
+
+<div class="row">
+	
+	{% for product in products %}
+		
+	<div class="col-md-4">
+		<figure class="card card-product-grid">
+			<div class="img-wrap"> 
+				
+				<img src="{{ product.image.url }}">
+				
+			</div> <!-- img-wrap.// -->
+			<figcaption class="info-wrap">
+				<div class="fix-height">
+					<a href="{% url 'product:product_detail' product.slug %}" class="title">{{ product.title }}</a>
+					<div class="price-wrap mt-2">
+				
+						<span class="price">${{product.price }} </span>
+						
+							
+					</div> <!-- price-wrap.// -->
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+
+						<a href="{% url 'product:product_detail' product.slug %}" class="btn btn-block btn-success">buy now </a>
+					</div>
+					<div class="col-md-6">
+
+						<a href="{% url 'cart:cart_add' %}" id='add-cart' class="btn btn-block btn-primary" data-index="{{ product.id }}">cart </a>
+					</div>
+				</div>
+			</figcaption>
+		</figure>
+	</div> <!-- col.// -->
+		
+	{% endfor %}
+
+	
+</div> <!-- row end.// -->
+<!-- pagination starts -->
+<div class="container">
+	<div class="row">
+		<div class="col-md-12 d-flex justify-content-center">
+			
+			<nav class="mt-4" aria-label="Page navigation sample">
+				<ul class="pagination">
+					{% if products.has_previous %}
+                    <li class="page-item">
+						<a class="page-link" href="?page={{ products.previous_page_number }}">Previous</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+						<span class="page-link">Previous</span>
+                    </li>
+                    {% endif %}
+					
+                    {% for page in products.paginator.page_range %}
+                    {% if page == products.number %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ page }}</span>
+                    </li>
+                    {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if products.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ products.next_page_number }}">Next</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Next</span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+	</main> <!-- col.// -->
+
+</div>
+<!-- pagination ends -->
+
+</div> <!-- container .//  -->
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+
+<!-- ========================= FOOTER ========================= -->
+{% include '../layouts/footer.html' %}
+<!-- ========================= FOOTER END // ========================= -->
+
+{% block scripts %}
+	
+<script>
+	
+    $(document).on('click', '#add-cart', function (e) {
+		e.preventDefault();
+		var prodid = $(this).attr('data-index');
+        $.ajax({
+            type: 'POST',
+            url: '{% url "cart:cart_add" %}',
+            data: {
+				productid: prodid,
+                csrfmiddlewaretoken: "{{csrf_token}}",
+                action: 'post'
+            },
+            success: function (json) {
+
+			if(json.qty){
+
+				document.getElementById("basket-qty").innerHTML = json.qty;               
+			}
+				
+            },
+            error: function (xhr, errmsg, err) {}
+        });
+    })
+
+		function setSelectedCategory(category) {
+			document.getElementById('selectedCategory').value = category;
+		}
+		
+		function submitForm() {
+			document.getElementById('selectedCategory').value = category;
+			document.querySelector('form').submit();
+		}
+			
+			
+		
+
+</script>
+{% endblock scripts %}
+
+{% endblock content %}
+
+

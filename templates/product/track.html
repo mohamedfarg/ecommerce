@@ -1,0 +1,26 @@
+
+
+{% extends '../base.html' %}
+{% load static %}
+{% block content %}
+{% include 'layouts/nav.html' %}
+
+{% if products %}
+  <form method="POST" action="{% url 'products:track_product' %}">
+    {% csrf_token %}
+    {% for product in products %}
+        <div class="block" style="display:block; margin:20px">
+
+            <input type="hidden" name="id" value="{{ product.id }}" >
+            <label for="link">{{ product.title }}:</label>
+            <input type="text" name="link" id="link">
+            <input type="submit" value="Track">
+        </div>
+    {% endfor %}
+  </form>
+{% else %}
+  <p>No products available for tracking.</p>
+{% endif %}
+    
+{% endblock content %}
+    
