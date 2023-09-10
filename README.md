@@ -63,9 +63,7 @@ Follow these steps to set up the project:
 
    The API documentation can be found at `http://localhost:8000/product/api/`.
 
-## Usage
 
-Describe how to use the project here. Include information about managing products, orders, users, and any other important functionalities. Also, provide code examples and usage scenarios.
 
 ## Contributing
 
@@ -77,12 +75,12 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Credits
 
-List any libraries, tools, or resources you used or were inspired by during development.
+free codecamp , django 4 by example , helped me alot 
 
 
 ## Acknowledgments
 
-Mention any individuals, organizations, or resources that have been instrumental in the development of this project.
+only me.
 
 ## Roadmap
 
@@ -94,9 +92,6 @@ Outline your project's future development plans and potential features.
 - GitHub: [moahamed]([https://github.com/your-username](https://github.com/mohamedfarg/ecommerce/edit/main))
 - LinkedIn: [your-linkedin-profile]([https://www.linkedin.com/in/your-linkedin-profile/](https://www.linkedin.com/in/mohamed-farag-79a96b1b2/))
 
-## Release History
-
-List the project's release history, including dates and version numbers.
 
 ---
 
