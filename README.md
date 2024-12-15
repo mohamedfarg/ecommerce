@@ -65,33 +65,6 @@ Follow these steps to set up the project:
 
 
 
-## Contributing
-
-If you'd like to contribute to this project, please follow my github https://github.com/mohamedfarg/
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
-
-## Credits
-
-free codecamp , django 4 by example , helped me alot 
-
-
-## Acknowledgments
-
-only me.
-
-## Roadmap
-
-Outline your project's future development plans and potential features.
-
-## Author
-
-- Your Name
-- GitHub: [moahamed]([https://github.com/your-username](https://github.com/mohamedfarg/ecommerce/edit/main))
-- LinkedIn: [your-linkedin-profile]([https://www.linkedin.com/in/your-linkedin-profile/](https://www.linkedin.com/in/mohamed-farag-79a96b1b2/))
-
 
 ---
 
